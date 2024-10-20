@@ -1,6 +1,7 @@
 {
     "python.testing.pytestArgs": [
-        "."
+        "--browser=firefox",  // Pass the browser as an argument
+
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

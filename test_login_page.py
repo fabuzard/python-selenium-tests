@@ -1,5 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.edge.service import Service as EdgeService
+
 from selenium.webdriver.common.by import By
 import time
 import pytest
@@ -9,10 +8,8 @@ class TestPositiveScenarios:
 
     @pytest.mark.login
     @pytest.mark.positive
-    def test_positive_login(self):
-        driver = webdriver.Edge()
-
-        time.sleep(3)
+    def test_positive_login(self,driver):
+       
         #Open page
         driver.get("https://practicetestautomation.com/practice-test-login/")
 
