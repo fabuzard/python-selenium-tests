@@ -7,9 +7,10 @@ import pytest
 
 
 
-@pytest.fixture()
+@pytest.fixture(params={"edge"})
 def driver(request):
     browser = request.config.getoption("--browser")
+    #browser = request.param
     print(f"Creating {browser} driver")
     if browser == "edge":
         my_driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install())) 
@@ -17,6 +18,7 @@ def driver(request):
         my_driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
     else:
         raise TypeError(f"Expected 'edge' or 'firefox', but got{browser}")
+
     yield my_driver
     print(f"Closing {browser} driver")
     my_driver.quit()

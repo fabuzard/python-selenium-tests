@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: PyTest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "--maxfail=1",  // Stop after one failure
+                "--disable-warnings"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false  // Set to false to debug external libraries as well
+        }
+    ]
+}

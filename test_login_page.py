@@ -14,6 +14,7 @@ class TestPositiveScenarios:
         driver.get("https://practicetestautomation.com/practice-test-login/")
 
 
+
         #Type username student into Username field
         username_locator = driver.find_element(By.ID,"username").send_keys("student")
 
