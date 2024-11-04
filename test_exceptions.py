@@ -5,85 +5,64 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
+from page_objects.exceptions_page import ExceptionsPage
+
 
 class TestExceptions:
     @pytest.mark.exceptions
     @pytest.mark.first
     def test_NoSuchElementException(self, driver):
         # Open page
-        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
+        exceptions_page = ExceptionsPage(driver)
+        exceptions_page.open()
         # Click Add button
-        driver.find_element(By.XPATH, "//button[@id='add_btn']").click()
-
-        wait = WebDriverWait(driver, 10)
         # Verify Row 2 input field is displayed
-        row_2_input_element = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@id='row2']")))
+        exceptions_page.add_second_row()
         
-        assert row_2_input_element.is_displayed(), "Row 2 input should be displayed"
+        assert exceptions_page.is_row2_isdisplayed(), "Row 2 should be displayed"
         # Row 2 doesn’t appear immediately. This test will fail with org.openqa.selenium.NoSuchElementException without proper wait
 
     @pytest.mark.exceptions
     @pytest.mark.second
     def test_ElementNotInteractableException(self, driver):
             # Open page
-            driver.get("https://practicetestautomation.com/practice-test-exceptions/")
-            
+            exceptions_page = ExceptionsPage(driver)
+            exceptions_page.open()
             # Click Add button and wait for Row 2 to load
-            driver.find_element(By.XPATH, "//button[@id='add_btn']").click()
-            wait = WebDriverWait(driver, 10)
+            exceptions_page.add_second_row()
             
             # Wait for the second row to become clickable (ready for interaction)
-            row_2_input_field = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@id='row2']//input[@class='input-field']")))
+            
+
             # Type text into the second input field
-            row_2_input_field.send_keys("Genburgir")
-            
+
             # Wait for Save button to be clickable and click it
-            save_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@id='row2']//button[@id='save_btn']")))
-            save_button.click()
-            
             # Verify confirmation text is displayed
-            saved_text = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@id='confirmation']")))
-            assert saved_text.is_displayed(), "The confirmation text should be displayed"
+            exceptions_page.row2_input_element("Genburgir")       
+            assert exceptions_page.get_confirmation_message()=="Row 2 was saved", "The confirmation text should be displayed"
     @pytest.mark.third
     def test_InvalidElementStateException(self,driver):
-        #Open page
-        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
+        # Open page
+        exceptions_page = ExceptionsPage(driver)
+        exceptions_page.open()
         #Clear input field
-        driver.find_element(By.XPATH, "//button[@id='edit_btn']").click()
-        #Type text into the input field
-        row_1_input = driver.find_element(By.XPATH, "//div[@id='row1']//input[@class='input-field']")
-        row_1_input.clear()
-            # Verify the input field is empty
-        assert row_1_input.get_attribute('value') == "", \
-        f"Expected input field to be empty, but got '{row_1_input.get_attribute('value')}'"
+        exceptions_page.modify_row1_input("Genburgir")
+        assert exceptions_page.get_confirmation_message()=="Row 1 was saved", "The confirmation text should be displayed"
 
     @pytest.mark.fourth
     def test_StaleElementReferenceException(self, driver):
         # Open page
-        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
-        
-        # Find the instructions text element and check its content
-        instruction_text = driver.find_element(By.XPATH, "//p[@id='instructions']")
-        assert instruction_text.text == "Push “Add” button to add another row", \
-            f"Expected instruction to display 'Push “Add” button to add another row', but got '{instruction_text.text}'"
-        
-        # Push add button
-        driver.find_element(By.XPATH, "//button[@id='add_btn']").click()
+        exceptions_page = ExceptionsPage(driver)
+        exceptions_page.open()
+        exceptions_page.add_second_row()
 
-        
-        
-        # Verify instruction text element is no longer displayed
-        wait = WebDriverWait(driver,10)
-        assert wait.until(EC.invisibility_of_element_located((By.ID,"instructions")))
+        assert not exceptions_page.are_instruction_displayed(),"Instruction text element should not be displayed"
 
     @pytest.mark.fifth
     def test_TimeoutException(self,driver):
         #Open page
-        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
+        exceptions_page = ExceptionsPage(driver)
+        exceptions_page.open()
         #Click Add button
-        driver.find_element(By.XPATH, "//button[@id='add_btn']").click()
-        #wait for 3 seconds for the second input field to be displayed
-        wait = WebDriverWait(driver,6)
-        row_2_input_field = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@id='row2']//input[@class='input-field']")))
-        #Verify second input field is displayed\
-        assert row_2_input_field.is_displayed(), "Row 2 input should be displayed"
+        exceptions_page.add_second_row() 
+        assert exceptions_page.is_row2_isdisplayed(), "Row 2 should be displayed"
